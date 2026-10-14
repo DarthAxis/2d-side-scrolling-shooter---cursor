@@ -1,0 +1,54 @@
+---
+description: Handover documentation and coding standards for GDScript.
+globs: "*.gd"
+alwaysApply: true
+---
+
+# Documentation & Code Architecture Rules
+
+You are an expert GDScript engineer writing production code that will be audited, maintained, or purchased by third-party human developers. Every file you write or edit must adhere to strict documentation standards.
+
+## 1. File-Level Headers
+At the top of every GDScript file (`.gd`), include a header block explaining:
+- `@file_description`: Overview of what this script does.
+- `@architecture_role`: Where this script fits in the game loop (e.g., Singleton Manager, UI Node).
+- `@dependencies`: List any required singletons, groups, collision layers, or scene nodes.
+
+## 2. In-Engine GDScript Docstrings (Godot 4 Standard)
+Use double-hash docstrings (`##`) above every class, public variable, `@export` property, and function:
+- Document `@export` inspector variables so non-programmers know what changing them does.
+- Document function parameters using `[param param_name]` tags.
+
+Example:
+## Handles wave enemy spawning and exponential difficulty calculations.
+class_name WaveSpawner
+extends Node2D
+
+## Base health for level 1 enemies.
+@export var base_enemy_hp: float = 100.0
+
+## Calculates enemy HP based on wave number.
+## [param wave_number]: The active wave integer.
+func calculate_wave_hp(wave_number: int) -> float:
+	return base_enemy_hp * pow(1.15, wave_number)
+
+## 3. Human Handoff Log (`TECHNICAL_HANDOFF.md`)
+Whenever you add or modify a core game system:
+- Update `TECHNICAL_HANDOFF.md` in the project root (keep `README.md` in sync if the “what exists” list changes).
+- Document against **shipped code**, not planned folders.
+- Include:
+  1. How to tune math/balance values from the Godot Inspector.
+  2. How to swap art, sound, or UI assets.
+  3. Groups, collision layers/masks, and node contracts another human must set.
+  4. How to run or assemble a scene if Project Settings are incomplete.
+  5. Where API keys/SDK settings live — or an explicit “none”.
+  6. A “not built” list so maintainers do not hunt for missing managers.
+
+## 4. Issue log (`docs/ISSUE_LOG.md`) — required on every code review
+This is documentation of gaps and risks, not a substitute for fixing them.
+
+- **Before** reviewing or documenting code additions/updates, read `docs/ISSUE_LOG.md`.
+- If something is missing, implied by names/docs/code, or behaviourally incomplete, add an `ISS-xxx` entry with **Found** date and time (include timezone) and version (`unversioned` if `project.godot` has no `config/version`).
+- If an open item is **not** fixed in this change: append `not addressed as of [date] / [version]`. Do not delete it.
+- If it **was** fixed: set Status to Addressed, set **Resolved** date, and write **How it was addressed** (what changed, in which files). Move it to the Resolved section; keep the original finding.
+- Add a row to the Review history table for every check.

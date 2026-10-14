@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://bplayercontroller01"]
+
+[ext_resource type="Script" path="res://scripts/player_controller.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(48, 48)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_player")
+fire_rate = 0.15
+damage = 10.0
+bullet_speed = 900.0
+bullets_per_shot = 1
+max_bullets_per_shot = 64
+shot_spread_degrees = 12.0
+bullet_pool_size = 96
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(0, -28)
